@@ -12,6 +12,7 @@
 		55C9ED1E21C78BA400E037F8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55C9ED1C21C78BA400E037F8 /* Main.storyboard */; };
 		55C9ED2021C78BA600E037F8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55C9ED1F21C78BA600E037F8 /* Assets.xcassets */; };
 		55C9ED2321C78BA600E037F8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55C9ED2121C78BA600E037F8 /* LaunchScreen.storyboard */; };
+		55C9ED2B21C78D3500E037F8 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C9ED2A21C78D3500E037F8 /* GameScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		55C9ED1F21C78BA600E037F8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		55C9ED2221C78BA600E037F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		55C9ED2421C78BA600E037F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		55C9ED2A21C78D3500E037F8 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,6 +40,7 @@
 		55C9ED0C21C78BA400E037F8 = {
 			isa = PBXGroup;
 			children = (
+				55C9ED2A21C78D3500E037F8 /* GameScene.swift */,
 				55C9ED1721C78BA400E037F8 /* FlappyBird */,
 				55C9ED1621C78BA400E037F8 /* Products */,
 			);
@@ -135,6 +138,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55C9ED2B21C78D3500E037F8 /* GameScene.swift in Sources */,
 				55C9ED1B21C78BA400E037F8 /* ViewController.swift in Sources */,
 				55C9ED1921C78BA400E037F8 /* AppDelegate.swift in Sources */,
 			);
@@ -289,7 +293,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = jp.techacademy.mikitaka.ichizawa.FlappyBird;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -306,7 +310,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = jp.techacademy.mikitaka.ichizawa.FlappyBird;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
