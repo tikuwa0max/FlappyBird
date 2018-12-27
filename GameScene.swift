@@ -1,5 +1,6 @@
 import SpriteKit
 import UIKit
+import AVFoundation
 
 class GameScene: SKScene,SKPhysicsContactDelegate  {
     
@@ -13,7 +14,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate  {
     let groundCategory: UInt32 = 1 << 1     // 0...00010
     let wallCategory: UInt32 = 1 << 2       // 0...00100
     let scoreCategory: UInt32 = 1 << 3      // 0...01000
-    let itemCategory: UInt32 = 1 << 4
+    let itemCategory: UInt32 = 1 << 4       // 0...10000
     
     // スコア
     var score = 0
@@ -25,6 +26,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate  {
     
     // SKView上にシーンが表示されたときに呼ばれるメソッド
     override func didMove(to view: SKView) {
+        
+        let music = SKAudioNode.init(fileNamed: "カフェでひと休み")
+        self.addChild(music)
         
         // 重力を設定
         physicsWorld.gravity = CGVector(dx: 0.0, dy: -4.0)
@@ -108,8 +112,10 @@ class GameScene: SKScene,SKPhysicsContactDelegate  {
         let item = SKNode()
             // 1〜までのランダムな整数を生成
         let random_y = arc4random_uniform( UInt32(80) )
+            
+        let groundTexture = SKTexture(imageNamed: "ground")
             // Y軸の下限にランダムな値を足して、下の壁のY座標を決定
-        let under_item_y = CGFloat(500 + random_y * 40)
+        let under_item_y = CGFloat( Int(groundTexture.size().height * 5) + Int(random_y * 40))
             
             // スプライトを配置する
         let sprite = SKSpriteNode(texture: itemTexture)
@@ -122,12 +128,14 @@ class GameScene: SKScene,SKPhysicsContactDelegate  {
             )
             sprite.zPosition = -20
            
-            
-            item.physicsBody?.isDynamic = false
-            item.physicsBody?.categoryBitMask = self.itemCategory
-            item.physicsBody?.contactTestBitMask = self.birdCategory
-            
+            // スプライトに物理演算を設定する
+            sprite.physicsBody = SKPhysicsBody(rectangleOf: itemTexture.size())
+            sprite.physicsBody?.isDynamic = false
+            sprite.physicsBody?.categoryBitMask = self.itemCategory
+            sprite.physicsBody?.contactTestBitMask = self.birdCategory
 
+            
+  
         
 
             item.addChild(sprite)
@@ -138,8 +146,10 @@ class GameScene: SKScene,SKPhysicsContactDelegate  {
     
         })
         
+
+        
         // 次の壁作成までの待ち時間のアクションを作成
-        let waititemAnimation = SKAction.wait(forDuration: 1.5)
+        let waititemAnimation = SKAction.wait(forDuration: 1.0)
         
         // アイテムを作成->待ち時間->壁を作成を無限に繰り替えるアクションを作成
         let repeatForeverAnimation = SKAction.repeatForever(SKAction.sequence([createitemAnimation, waititemAnimation]))
@@ -379,20 +389,52 @@ class GameScene: SKScene,SKPhysicsContactDelegate  {
         if scrollNode.speed <= 0 {
             return
         }
-        if (contact.bodyA.categoryBitMask & itemCategory) == itemCategory || (contact.bodyB.categoryBitMask & itemCategory) == itemCategory {
+        else if (contact.bodyA.categoryBitMask & itemCategory) == itemCategory || (contact.bodyB.categoryBitMask & itemCategory) == itemCategory {
+            
+       
+            
+            let mySoundAction: SKAction = SKAction.playSoundFileNamed("puyon1", waitForCompletion: true)
+            
+            // 再生アクション.
+            
+            self.run(mySoundAction);
+            
+
             // itemと衝突した
             print("ScoreUp")
             score += 10
+            scoreLabelNode.text = "Score:\(score)"
+            
+            var bestScore = userDefaults.integer(forKey: "BEST")
+            
+        
+            if score > bestScore {
+                bestScore = score
+                bestScoreLabelNode.text = "Best Score:\(bestScore)"
+                userDefaults.set(bestScore, forKey: "BEST")
+                userDefaults.synchronize()
+            }
+            
+            if (contact.bodyA.categoryBitMask & itemCategory) == itemCategory {
+                contact.bodyA.node?.removeFromParent()
+            } else {
+                contact.bodyB.node?.removeFromParent()
+            }
+     
+        
+            
+            // 保留　item.removeAllChildren()
             
         }
         
-        if (contact.bodyA.categoryBitMask & scoreCategory) == scoreCategory || (contact.bodyB.categoryBitMask & scoreCategory) == scoreCategory {
+        else if (contact.bodyA.categoryBitMask & scoreCategory) == scoreCategory || (contact.bodyB.categoryBitMask & scoreCategory) == scoreCategory {
             // スコア用の物体と衝突した
             print("ScoreUp")
             score += 1
             scoreLabelNode.text = "Score:\(score)"
             
             var bestScore = userDefaults.integer(forKey: "BEST")
+            
             if score > bestScore {
                 bestScore = score
                   bestScoreLabelNode.text = "Best Score:\(bestScore)"
@@ -403,6 +445,12 @@ class GameScene: SKScene,SKPhysicsContactDelegate  {
         } else {
             // 壁か地面と衝突した
             print("GameOver")
+            
+            let mySoundAction: SKAction = SKAction.playSoundFileNamed("hyun1", waitForCompletion: true)
+            
+            // 再生アクション.
+            
+            self.run(mySoundAction);
             
             // スクロールを停止させる
             scrollNode.speed = 0
@@ -425,6 +473,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate  {
         
         wallNode.removeAllChildren()
      
+        item.removeAllChildren()
        
         bird.speed = 1
         scrollNode.speed = 1
