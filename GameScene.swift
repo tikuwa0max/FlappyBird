@@ -18,7 +18,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate  {
     
     // スコア
     var score = 0
+    var itemscore = 0
     var scoreLabelNode:SKLabelNode!    // ←追加
+    var itemscoreLabelNode:SKLabelNode!
     var bestScoreLabelNode:SKLabelNode!    // ←追加
     let userDefaults:UserDefaults = UserDefaults.standard    // 追加
 
@@ -29,6 +31,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate  {
         
         let music = SKAudioNode.init(fileNamed: "カフェでひと休み")
         self.addChild(music)
+        
         
         // 重力を設定
         physicsWorld.gravity = CGVector(dx: 0.0, dy: -4.0)
@@ -79,13 +82,23 @@ class GameScene: SKScene,SKPhysicsContactDelegate  {
         
         bestScoreLabelNode = SKLabelNode()
         bestScoreLabelNode.fontColor = UIColor.black
-        bestScoreLabelNode.position = CGPoint(x: 10, y: self.frame.size.height - 90)
+        bestScoreLabelNode.position = CGPoint(x: 10, y: self.frame.size.height - 120)
         bestScoreLabelNode.zPosition = 100 // 一番手前に表示する
         bestScoreLabelNode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left
         
         let bestScore = userDefaults.integer(forKey: "BEST")
         bestScoreLabelNode.text = "Best Score:\(bestScore)"
         self.addChild(bestScoreLabelNode)
+        
+        itemscore = 0
+        itemscoreLabelNode = SKLabelNode()
+        itemscoreLabelNode.fontColor = UIColor.black
+        itemscoreLabelNode.position = CGPoint(x: 10, y: self.frame.size.height - 90)
+        itemscoreLabelNode.zPosition = 100 // 一番手前に表示する
+        itemscoreLabelNode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left
+        itemscoreLabelNode.text = "Item Score:\(itemscore)"
+        self.addChild(itemscoreLabelNode)
+
     }
     
     
@@ -402,14 +415,14 @@ class GameScene: SKScene,SKPhysicsContactDelegate  {
 
             // itemと衝突した
             print("ScoreUp")
-            score += 10
-            scoreLabelNode.text = "Score:\(score)"
+            itemscore += 10
+            itemscoreLabelNode.text = "Item Score:\(itemscore)"
             
             var bestScore = userDefaults.integer(forKey: "BEST")
             
         
-            if score > bestScore {
-                bestScore = score
+            if score + itemscore > bestScore {
+                bestScore = score + itemscore
                 bestScoreLabelNode.text = "Best Score:\(bestScore)"
                 userDefaults.set(bestScore, forKey: "BEST")
                 userDefaults.synchronize()
@@ -435,8 +448,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate  {
             
             var bestScore = userDefaults.integer(forKey: "BEST")
             
-            if score > bestScore {
-                bestScore = score
+            if score + itemscore > bestScore {
+                bestScore = score + itemscore
                   bestScoreLabelNode.text = "Best Score:\(bestScore)"
                 userDefaults.set(bestScore, forKey: "BEST")
                 userDefaults.synchronize()
@@ -465,7 +478,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate  {
     }
     func restart() {
         score = 0
-        scoreLabelNode.text = String("Score:\(score)") 
+        itemscore = 0
+        scoreLabelNode.text = String("Score:\(score)")
+        itemscoreLabelNode.text = String("Item Score:\(itemscore)")
         bird.position = CGPoint(x: self.frame.size.width * 0.2, y:self.frame.size.height * 0.7)
         bird.physicsBody?.velocity = CGVector.zero
         bird.physicsBody?.collisionBitMask = groundCategory | wallCategory
